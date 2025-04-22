@@ -1,41 +1,15 @@
-import 'dotenv/config';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { eq } from 'drizzle-orm';
-import { usersTable } from './db/schema.js'
-  
-const db = drizzle(process.env.DATABASE_URL!);
+import { serve } from '@hono/node-server'
+import { Hono } from 'hono'
 
-async function main() {
-  const user: typeof usersTable.$inferInsert = {
-    name: 'John',
-    age: 30,
-    email: 'john@example.com',
-  };
+const app = new Hono()
 
-  await db.insert(usersTable).values(user);
-  console.log('New user created!')
+app.get('/', (c) => {
+  return c.text('Hello Hono!')
+})
 
-  const users = await db.select().from(usersTable);
-  console.log('Getting all users from the database: ', users)
-  /*
-  const users: {
-    id: number;
-    name: string;
-    age: number;
-    email: string;
-  }[]
-  */
-
-  await db
-    .update(usersTable)
-    .set({
-      age: 31,
-    })
-    .where(eq(usersTable.email, user.email));
-  console.log('User info updated!')
-
-  // await db.delete(usersTable).where(eq(usersTable.email, user.email));
-  // console.log('User deleted!')
-}
-
-main();
+serve({
+  fetch: app.fetch,
+  port: 3000
+}, (info) => {
+  console.log(`Server is running on http://localhost:${info.port}`)
+})
