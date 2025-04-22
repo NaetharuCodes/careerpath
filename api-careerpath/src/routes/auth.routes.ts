@@ -38,11 +38,14 @@ auth.post("/signup", async (c: Context) => {
     }
 
     const hashedPassword = await hashPassword(password);
+
+    console.log("Hashed Password: ===> ", hashedPassword);
+
     const [user] = await db
       .insert(users)
       .values({
         email,
-        password: hashedPassword,
+        passwordHash: hashedPassword,
         name,
       })
       .returning({ id: users.id, email: users.email });
