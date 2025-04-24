@@ -94,6 +94,9 @@ auth.post("login", async (c: Context) => {
     const { email, password } = request.data;
     const db = c.get("db");
 
+    console.log("EMAIL is ", email);
+    console.log("PASSWORD is ", password);
+
     const [user] = await db
       .select()
       .from(users)
@@ -101,10 +104,13 @@ auth.post("login", async (c: Context) => {
       .limit(1);
 
     if (!user) {
+      console.log("no user");
       return c.json({ error: "Invalid Credentials" }, 400);
     }
 
-    const isMatch = await comparePasswords(password, user.hashedPassword);
+    const isMatch = await comparePasswords(password, user.passwordHash);
+
+    console.log("isMatch...: ", isMatch);
 
     if (!isMatch) {
       return c.json({ error: "Invalid Credentials" }, 400);
