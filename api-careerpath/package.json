@@ -7,6 +7,8 @@
   "dependencies": {
     "@hono/node-server": "^1.14.1",
     "bcrypt": "^5.1.1",
+    "chronofuzz": "^1.0.0",
+    "crypto": "^1.0.1",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.42.0",
     "hono": "^4.7.7",

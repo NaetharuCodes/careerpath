@@ -2,12 +2,16 @@ import { Hono } from "hono";
 import type { Context } from "hono";
 import { z } from "zod";
 import { users } from "../db/schema/users.js";
+import { resetTokens } from "../db/schema/resetTokens.js";
 import { eq } from "drizzle-orm";
 import {
   comparePasswords,
   generateToken,
   hashPassword,
 } from "../helpers/auth.helpers.js";
+import crypto from "crypto";
+import { addMinutes } from "../helpers/date.js";
+import chronofuzz from "chronofuzz";
 
 const auth = new Hono();
 
@@ -43,8 +47,6 @@ auth.post("/signup", async (c: Context) => {
 
     const hashedPassword = await hashPassword(password);
 
-    console.log("Hashed Password: ===> ", hashedPassword);
-
     const [user] = await db
       .insert(users)
       .values({
@@ -70,7 +72,7 @@ auth.post("/signup", async (c: Context) => {
   }
 });
 
-auth.post("login", async (c: Context) => {
+auth.post("/login", async (c: Context) => {
   try {
     const schema = z.object({
       email: z.string().email(),
@@ -89,13 +91,8 @@ auth.post("login", async (c: Context) => {
       );
     }
 
-    console.log("We have a request");
-
     const { email, password } = request.data;
     const db = c.get("db");
-
-    console.log("EMAIL is ", email);
-    console.log("PASSWORD is ", password);
 
     const [user] = await db
       .select()
@@ -109,8 +106,6 @@ auth.post("login", async (c: Context) => {
     }
 
     const isMatch = await comparePasswords(password, user.passwordHash);
-
-    console.log("isMatch...: ", isMatch);
 
     if (!isMatch) {
       return c.json({ error: "Invalid Credentials" }, 400);
@@ -128,5 +123,52 @@ auth.post("login", async (c: Context) => {
     return c.json({ error: "Failed login" }, 500);
   }
 });
+
+// Using cronofuzz to normalize processing time regardless of if user exists.
+auth.post(
+  "/forgot",
+  chronofuzz.hono({ baseTime: 2, jitterRange: 4 }),
+  async (c: Context) => {
+    try {
+      const schema = z.object({
+        email: z.string().email("Please provide a valid email address"),
+      });
+
+      const body = await c.req.json();
+      const result = schema.safeParse(body);
+
+      if (!result.success) {
+        return c.json({
+          error: "Invalid input",
+          details: result.error.errors,
+        });
+      }
+
+      const { email } = result.data;
+      const db = c.get("db");
+      const user = await db.select().from(users).where(eq(users.email, email));
+
+      const resetToken = crypto.randomBytes(32).toString("hex");
+      const expireTime = addMinutes(new Date(), 15);
+
+      const userExists = user.length > 0;
+
+      if (userExists) {
+        await db.insert(resetTokens).values({
+          userId: user[0].id,
+          token: resetToken,
+          expiresAt: expireTime,
+        });
+      }
+
+      return c.json({
+        message: "Reset Processed",
+      });
+    } catch (error) {
+      console.error("Password Forgotten Error:", error);
+      return c.json({ error: "Failed to handle forgot password" }, 500);
+    }
+  }
+);
 
 export default auth;
