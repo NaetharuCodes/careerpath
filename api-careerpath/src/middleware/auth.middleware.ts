@@ -11,6 +11,8 @@ export async function authMiddleware(c: Context, next: Next) {
   const token = authHeader.replace("Bearer ", "");
   const payload = verifyToken(token);
 
+  console.log("the payload is: ", payload);
+
   if (!payload) {
     return c.json({ error: "Invalid or expired token" });
   }
