@@ -181,4 +181,96 @@ auth.post(
   }
 );
 
+auth.patch("/reset", async (c: Context) => {
+  try {
+    const schema = z.string();
+
+    const tokenFromQuery = c.req.query("token");
+
+    if (!tokenFromQuery) {
+      return c.json(
+        {
+          error: "Missing Reset Token",
+        },
+        400
+      );
+    }
+
+    const result = schema.safeParse(tokenFromQuery);
+
+    if (!result.success) {
+      return c.json(
+        {
+          error: "Invalid Token",
+        },
+        400
+      );
+    }
+
+    const passwordSchema = z.string().min(8);
+
+    const { newPassword } = await c.req.json();
+    const passwordRequest = passwordSchema.safeParse(newPassword);
+
+    if (!passwordRequest) {
+      return c.json(
+        {
+          error: "Invalid Token",
+        },
+        400
+      );
+    }
+
+    console.log(newPassword);
+    const hashedPassword = await hashPassword(newPassword);
+
+    const db = c.get("db");
+
+    const dbToken = await db
+      .select()
+      .from(resetTokens)
+      .where(eq(resetTokens.token, tokenFromQuery))
+      .limit(1);
+
+    if (dbToken.length < 1) {
+      return c.json(
+        {
+          error: "Invalid Token",
+        },
+        400
+      );
+    }
+
+    const expires = dbToken[0].expiresAt;
+
+    if (expires < new Date()) {
+      return c.json(
+        {
+          error: "Token expired",
+        },
+        400
+      );
+    }
+
+    const userId = dbToken[0].userId;
+
+    await db
+      .update(users)
+      .set({ passwordHash: hashedPassword, updatedAt: new Date() })
+      .where(eq(users.id, userId));
+
+    await db
+      .update(resetTokens)
+      .set({ used: true, updatedAt: new Date() })
+      .where(eq(resetTokens.token, tokenFromQuery));
+
+    return c.json({
+      message: "done",
+    });
+  } catch (error) {
+    console.error("Error processing password reset:", error);
+    return c.json({ error: "Failed to process password reset" }, 500);
+  }
+});
+
 export default auth;

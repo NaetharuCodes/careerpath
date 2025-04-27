@@ -1,5 +1,4 @@
 import * as bcrypt from "bcrypt";
-import { boolean } from "drizzle-orm/gel-core";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";

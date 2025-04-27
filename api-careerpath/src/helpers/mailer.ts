@@ -15,8 +15,8 @@ export const sendPasswordResetEmail = async (
   resetToken: string
 ) => {
   const resetUrl = `${
-    process.env.EMAIL_FROM_NAME || "Career Path"
-  }/reset-password?token=${resetToken}`;
+    process.env.EMAIL_FROM_NAME || "careerpath.com"
+  }/reset?token=${resetToken}`;
 
   return transporter.sendMail({
     from: `"${process.env.EMAIL_FROM_NAME || "Career Path"}" <${
