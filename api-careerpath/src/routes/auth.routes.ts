@@ -12,6 +12,7 @@ import {
 import crypto from "crypto";
 import { addMinutes } from "../helpers/date.js";
 import chronofuzz from "chronofuzz";
+import { sendPasswordResetEmail } from "../helpers/mailer.js";
 
 const auth = new Hono();
 
@@ -159,6 +160,15 @@ auth.post(
           token: resetToken,
           expiresAt: expireTime,
         });
+
+        try {
+          await sendPasswordResetEmail(email, resetToken);
+        } catch (emailError) {
+          console.error("Email sending failed: ", emailError);
+          return c.json({
+            message: "Reset Processed 2",
+          });
+        }
       }
 
       return c.json({
