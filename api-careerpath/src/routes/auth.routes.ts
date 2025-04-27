@@ -13,6 +13,7 @@ import crypto from "crypto";
 import { addMinutes } from "../helpers/date.js";
 import chronofuzz from "chronofuzz";
 import { sendPasswordResetEmail } from "../helpers/mailer.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const auth = new Hono();
 
@@ -104,6 +105,11 @@ auth.post("/login", async (c: Context) => {
     if (!user) {
       console.log("no user");
       return c.json({ error: "Invalid Credentials" }, 400);
+    }
+
+    if (user.disabled) {
+      console.log("User account has been closed");
+      return c.json({ error: "User account has been closed" }, 401);
     }
 
     const isMatch = await comparePasswords(password, user.passwordHash);
@@ -270,6 +276,40 @@ auth.patch("/reset", async (c: Context) => {
   } catch (error) {
     console.error("Error processing password reset:", error);
     return c.json({ error: "Failed to process password reset" }, 500);
+  }
+});
+
+auth.patch("/disable", authMiddleware, async (c: Context) => {
+  try {
+    const user = c.get("user");
+
+    if (!user.id) {
+      return c.json(
+        {
+          error: "Missing user id",
+        },
+        400
+      );
+    }
+
+    const db = c.get("db");
+
+    await db.update(users).set({ disabled: true }).where(eq(users.id, user.id));
+
+    return c.json(
+      {
+        message: "Account disabled",
+      },
+      200
+    );
+  } catch (error) {
+    console.error(error);
+    return c.json(
+      {
+        message: "Failed to disabled account",
+      },
+      500
+    );
   }
 });
 
