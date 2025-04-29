@@ -228,6 +228,11 @@ auth.post("/login", async (c: Context) => {
       return c.json({ error: "Invalid Credentials" }, 400);
     }
 
+    if (!user.verified) {
+      console.log("Invalid email");
+      return c.json({ error: "Email not verified" }, 401);
+    }
+
     const token = generateToken(user.id);
 
     return c.json({
