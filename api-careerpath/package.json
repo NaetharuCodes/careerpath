@@ -2,7 +2,11 @@
   "name": "api-careerpath",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.1",
@@ -23,7 +27,11 @@
     "@types/node": "^20.11.17",
     "@types/nodemailer": "^6.4.17",
     "@types/pg": "^8.11.13",
+    "@types/supertest": "^6.0.3",
+    "@vitest/ui": "^3.1.2",
     "drizzle-kit": "^0.31.0",
-    "tsx": "^4.19.3"
+    "supertest": "^7.1.0",
+    "tsx": "^4.19.3",
+    "vitest": "^3.1.2"
   }
 }

@@ -6,7 +6,7 @@ import { logger } from "hono/logger";
 import type { Context, Next } from "hono";
 import auth from "./routes/auth.routes.js";
 
-const app = new Hono();
+export const app = new Hono();
 
 // Set up the middleware
 app.use("*", logger());
@@ -23,12 +23,15 @@ app.get("/", (c) => {
 
 app.route("/auth", auth);
 
-serve(
-  {
-    fetch: app.fetch,
-    port: 3000,
-  },
-  (info) => {
-    console.log(`Server is running on http://localhost:${info.port}`);
-  }
-);
+// Only start the server if this file is the main module (not imported)
+if (import.meta.url === import.meta.main) {
+  serve(
+    {
+      fetch: app.fetch,
+      port: 3000,
+    },
+    (info) => {
+      console.log(`Server is running on http://localhost:${info.port}`);
+    }
+  );
+}
