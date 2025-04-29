@@ -12,7 +12,7 @@ import {
 import crypto from "crypto";
 import { addMinutes } from "../helpers/date.js";
 import chronofuzz from "chronofuzz";
-import { sendPasswordResetEmail } from "../helpers/mailer.js";
+import { sendPasswordResetEmail, sendWelcomeEmail } from "../helpers/mailer.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const auth = new Hono();
@@ -38,39 +38,149 @@ auth.post("/signup", async (c: Context) => {
     const { email, password, name } = result.data;
 
     const db = c.get("db");
+
     const existingUser = db
       .select()
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
-    if (existingUser.length > 0) {
-      return c.json({ error: "User already exists" }, 409);
-    }
 
     const hashedPassword = await hashPassword(password);
+    const validationToken = crypto.randomBytes(32).toString("hex");
+    const validationExpiresTime = addMinutes(new Date(), 15);
 
-    const [user] = await db
-      .insert(users)
-      .values({
-        email,
-        passwordHash: hashedPassword,
-        name,
-      })
-      .returning({ id: users.id, email: users.email });
+    // There is no existing user and so we make a new account
+    if (!existingUser[0]) {
+      const [user] = await db
+        .update(users)
+        .set({
+          passwordHash: hashedPassword,
+          name,
+          validationToken,
+          validationExpiresTime,
+        })
+        .returning({ id: users.id, email: users.email });
 
-    const token = generateToken(user.id);
+      try {
+        sendWelcomeEmail(email, validationToken);
+      } catch (emailError) {
+        return c.json(
+          {
+            error: "Error sending authentication token to email address",
+          },
+          500
+        );
+      }
+      return c.json(
+        {
+          message: "User created successfully",
+          user: { id: user.id, email: user.email },
+        },
+        201
+      );
+    }
+
+    // if the user already exists but needs a new verification token
+    if (!existingUser[0].verified) {
+      console.log("not yet validated");
+
+      const [user] = await db
+        .update(users)
+        .values({
+          email,
+          passwordHash: hashedPassword,
+          name,
+          validationToken,
+          validationExpiresTime,
+        })
+        .where(eq(users.id, existingUser[0].id))
+        .returning({ id: users.id, email: users.email });
+
+      try {
+        sendWelcomeEmail(email, validationToken);
+      } catch (emailError) {
+        return c.json(
+          {
+            error: "Error sending authentication token to email address",
+          },
+          500
+        );
+      }
+
+      return c.json(
+        {
+          message: "User created successfully",
+          user: { id: user.id, email: user.email },
+        },
+        201
+      );
+    }
 
     return c.json(
       {
-        message: "User created successfully",
-        user: { id: user.id, email: user.email },
-        token,
+        error: "User already exists",
       },
-      201
+      400
     );
   } catch (error) {
     console.error("Signup error:", error);
     return c.json({ error: "Failed to create user" }, 500);
+  }
+});
+
+auth.patch("/verify", async (c: Context) => {
+  try {
+    const schema = z.string();
+
+    const token = c.req.query("token");
+    const request = schema.safeParse(token);
+
+    if (!request.success || !token) {
+      return c.json(
+        {
+          error: "Invalid token",
+        },
+        401
+      );
+    }
+
+    const db = c.get("db");
+
+    // Check the validation token is active
+    const [isTokenActive] = await db
+      .select()
+      .from(users)
+      .where(eq(users.validationToken, token))
+      .limit(1);
+
+    if (
+      isTokenActive.validationExpiresTime < new Date() ||
+      isTokenActive.verified
+    ) {
+      return c.json(
+        {
+          error: "Verification not possible",
+        },
+        401
+      );
+    }
+
+    const [user] = await db
+      .update(users)
+      .set({ verified: true })
+      .where(eq(users.validationToken, token))
+      .returning({ id: users.id, email: users.email, name: users.name });
+
+    const jwtToken = generateToken(user.id);
+
+    return c.json({
+      message: "Validation Successful",
+      user: { id: user.id, email: user.email, name: user.name },
+      jwtToken,
+    });
+  } catch (error) {
+    console.error("Validation error:", error);
+    return c.json({ error: "Failed to validate email address" }, 500);
   }
 });
 
@@ -156,7 +266,7 @@ auth.post(
       const user = await db.select().from(users).where(eq(users.email, email));
 
       const resetToken = crypto.randomBytes(32).toString("hex");
-      const expireTime = addMinutes(new Date(), 15);
+      const expireTime = addMinutes(new Date(), 15 * 60);
 
       const userExists = user.length > 0;
 
@@ -172,7 +282,7 @@ auth.post(
         } catch (emailError) {
           console.error("Email sending failed: ", emailError);
           return c.json({
-            message: "Reset Processed 2",
+            message: "Reset Processed",
           });
         }
       }

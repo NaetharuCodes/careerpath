@@ -1,5 +1,4 @@
 import {
-  PgTable,
   serial,
   varchar,
   timestamp,
@@ -14,5 +13,8 @@ export const users = pgTable("users", {
   passwordHash: varchar("password_hash", { length: 255 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  verified: boolean().default(false),
+  validationToken: varchar("validation_token"),
+  validationExpiresTime: timestamp("validation_expires_time"),
   disabled: boolean().default(false),
 });
