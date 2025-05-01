@@ -39,7 +39,7 @@ auth.post("/signup", async (c: Context) => {
 
     const db = c.get("db");
 
-    const existingUser = db
+    const existingUser = await db
       .select()
       .from(users)
       .where(eq(users.email, email))
@@ -47,15 +47,18 @@ auth.post("/signup", async (c: Context) => {
 
     const hashedPassword = await hashPassword(password);
     const validationToken = crypto.randomBytes(32).toString("hex");
-    const validationExpiresTime = addMinutes(new Date(), 15);
+    const validationExpiresTime = addMinutes(new Date(), 15 * 60);
 
     // There is no existing user and so we make a new account
     if (!existingUser[0]) {
+      console.log("No existing user", existingUser)
+
       const [user] = await db
-        .update(users)
-        .set({
+        .insert(users)
+        .values({
           passwordHash: hashedPassword,
           name,
+          email,
           validationToken,
           validationExpiresTime,
         })
@@ -86,8 +89,7 @@ auth.post("/signup", async (c: Context) => {
 
       const [user] = await db
         .update(users)
-        .values({
-          email,
+        .set({
           passwordHash: hashedPassword,
           name,
           validationToken,

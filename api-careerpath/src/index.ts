@@ -23,15 +23,11 @@ app.get("/", (c) => {
 
 app.route("/auth", auth);
 
-// Only start the server if this file is the main module (not imported)
-if (import.meta.url === import.meta.main) {
   serve(
     {
       fetch: app.fetch,
       port: 3000,
     },
-    (info) => {
-      console.log(`Server is running on http://localhost:${info.port}`);
-    }
+      console.log(`Server is running on http://localhost:3000`)  
   );
-}
+
