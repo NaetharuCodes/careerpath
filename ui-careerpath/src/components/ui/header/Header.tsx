@@ -3,19 +3,31 @@ import React from "react";
 import { Button } from "@/components/ui/button/Button";
 import { useTheme } from "@/components/theme-provider";
 import { Sun, Moon, Menu, X } from "lucide-react";
+import LoginModal from "../loginmodal/LoginModal";
+import SignupModal from "../signupmodal/SignupModal";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
+  const [showSignUpModal, setShowSignUpModal] = React.useState(false);
+
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const toggleLoginModal = () => {
+    setShowLoginModal(!showLoginModal);
+  };
+
+  const toggleSignupModal = () => {
+    setShowSignUpModal(!showSignUpModal);
   };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
-        {/* Logo/Brand */}
         <div className="flex items-center gap-2">
           <span className="text-xl font-bold">CareerPath</span>
         </div>
@@ -44,10 +56,17 @@ const Header = () => {
 
         {/* Right Side - Auth and Theme Toggle */}
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" className="hidden md:flex">
+          <Button
+            variant="outline"
+            size="sm"
+            className="hidden md:flex"
+            onClick={toggleLoginModal}
+          >
             Sign In
           </Button>
-          <Button className="hidden md:flex">Sign Up</Button>
+          <Button className="hidden md:flex" onClick={toggleSignupModal}>
+            Sign Up
+          </Button>
 
           {/* Theme Toggle */}
           <Button
@@ -113,6 +132,21 @@ const Header = () => {
             </div>
           </nav>
         </div>
+      )}
+
+      {showLoginModal && (
+        <LoginModal
+          onClose={() => setShowLoginModal(false)}
+          onSwitchToSignup={() => {}}
+          isOpen
+        />
+      )}
+      {showSignUpModal && (
+        <SignupModal
+          onClose={() => setShowSignUpModal(false)}
+          onSwitchToLogin={() => {}}
+          isOpen
+        />
       )}
     </header>
   );
