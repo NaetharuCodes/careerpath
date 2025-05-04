@@ -1,13 +1,8 @@
 import "./App.css";
-import { ThemeProvider } from "./components/theme-provider";
-import { Button } from "./components/ui/button";
+import AppShell from "./components/ui/appshell/AppShell";
 
 function App() {
-  return (
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Button>Press me</Button>
-    </ThemeProvider>
-  );
+  return <AppShell></AppShell>;
 }
 
 export default App;
