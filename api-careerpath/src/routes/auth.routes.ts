@@ -157,8 +157,13 @@ auth.patch("/verify", async (c: Context) => {
 
     if (
       isTokenActive.validationExpiresTime < new Date() ||
-      isTokenActive.verified
+      isTokenActive.verified ||
+      isTokenActive.validationToken !== token
     ) {
+      console.log("user", isTokenActive);
+      console.log("Token", token);
+      console.log("DBToken", isTokenActive.validationToken);
+
       return c.json(
         {
           error: "Verification not possible",

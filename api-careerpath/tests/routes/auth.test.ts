@@ -30,8 +30,6 @@ vi.mock("../../src/helpers/mailer.js", () => ({
   sendWelcomeEmail: vi.fn().mockResolvedValue(true),
 }));
 
-vi.mock;
-
 describe("Auth Routes - Sign Up", () => {
   it("allows a user to sign up with the correct info", async () => {
     // Set up to show no user returned
@@ -186,5 +184,38 @@ describe("Auth Routes - Verify", () => {
     expect(data.user).toHaveProperty("id", "001");
     expect(data.user).toHaveProperty("email", "user@email.com");
     expect(data.jwtToken).toContain("validToken");
+  });
+
+  it("returns a 401 when token is missing", async () => {
+    const response = await app.request("/auth/verify", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    expect(response.status).toBe(401);
+  });
+
+  it("returns a 401 when token is missing", async () => {
+    const response = await app.request("/auth/verify", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    expect(response.status).toBe(401);
+  });
+
+  it("returns a 401 when token does not match", async () => {
+    const response = await app.request("/auth/verify?token=wrongvalue", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    expect(response.status).toBe(401);
   });
 });
