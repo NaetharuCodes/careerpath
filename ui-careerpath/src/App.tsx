@@ -1,13 +1,13 @@
-import '@mantine/core/styles.css';
+import "./App.css";
+import { ThemeProvider } from "./components/theme-provider";
+import { Button } from "./components/ui/button";
 
-import { MantineProvider } from '@mantine/core';
-import { Router } from './Router';
-import { theme } from './theme';
-
-export default function App() {
+function App() {
   return (
-    <MantineProvider theme={theme}>
-      <Router />
-    </MantineProvider>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Button>Press me</Button>
+    </ThemeProvider>
   );
 }
+
+export default App;
