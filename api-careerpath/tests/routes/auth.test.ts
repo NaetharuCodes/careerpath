@@ -1,5 +1,6 @@
 import { vi, expect, it, describe } from "vitest";
 import { app } from "../../src/index.js";
+import { addMinutes } from "../../src/helpers/date.js";
 
 let mockDbInsertReturn = [{ id: "001", email: "user@email.com" }];
 let mockDbSelectReturn: any = [];
@@ -22,6 +23,7 @@ vi.mock("../../src/db/index.js", () => ({
 
 vi.mock("../../src/helpers/auth.helpers.js", () => ({
   hashPassword: vi.fn().mockResolvedValue("hashed-password"),
+  generateToken: vi.fn().mockReturnValue("validToken"),
 }));
 
 vi.mock("../../src/helpers/mailer.js", () => ({
@@ -150,5 +152,70 @@ describe("Auth Routes - Sign Up", () => {
     expect(response.status).toBe(400);
     const data = await response.json();
     expect(data).toHaveProperty("error", "Invalid input");
+  });
+});
+
+describe("Auth Routes - Verify", () => {
+  mockDbSelectReturn = [
+    {
+      id: "001",
+      name: "test user",
+      email: "user@email.com",
+      password: "somenewpassword",
+      verified: false,
+      validationToken: "validToken",
+      validationExpiresTime: addMinutes(new Date(), 15 * 60),
+    },
+  ];
+
+  it("returns 200 when given a valid token", async () => {
+    const response = await app.request("/auth/verify?token=validToken", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    expect(response.status).toBe(201);
+    const data = await response.json();
+    expect(data).toHaveProperty("message", "Validation Successful");
+    console.log(data);
+    expect(data).toHaveProperty("user");
+    expect(data.user).toHaveProperty("id", "001");
+    expect(data.user).toHaveProperty("email", "user@email.com");
+    expect(data.jwtToken).toContain("validToken");
+  });
+
+  it("returns a 401 when token is missing", async () => {
+    const response = await app.request("/auth/verify", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    expect(response.status).toBe(401);
+  });
+
+  it("returns a 401 when token is missing", async () => {
+    const response = await app.request("/auth/verify", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    expect(response.status).toBe(401);
+  });
+
+  it("returns a 401 when token does not match", async () => {
+    const response = await app.request("/auth/verify?token=wrongvalue", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    expect(response.status).toBe(401);
   });
 });
