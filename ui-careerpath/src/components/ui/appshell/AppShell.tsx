@@ -1,9 +1,12 @@
+import Footer from "../footer/Footer";
+import Header from "../header/Header";
+
 const AppShell = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <header>HEADER</header>
+      <Header />
       <div className="flex-grow">CONTENT</div>
-      <footer>FOOTER</footer>
+      <Footer />
     </div>
   );
 };
