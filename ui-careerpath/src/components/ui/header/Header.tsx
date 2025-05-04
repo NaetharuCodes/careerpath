@@ -125,10 +125,10 @@ const Header = () => {
               Resources
             </a>
             <div className="pt-4 flex flex-col space-y-2">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" onClick={toggleLoginModal}>
                 Sign In
               </Button>
-              <Button>Sign Up</Button>
+              <Button onClick={toggleSignupModal}>Sign Up</Button>
             </div>
           </nav>
         </div>
