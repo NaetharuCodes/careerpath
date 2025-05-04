@@ -175,11 +175,14 @@ auth.patch("/verify", async (c: Context) => {
 
     const jwtToken = generateToken(user.id);
 
-    return c.json({
-      message: "Validation Successful",
-      user: { id: user.id, email: user.email, name: user.name },
-      jwtToken,
-    });
+    return c.json(
+      {
+        message: "Validation Successful",
+        user: { id: user.id, email: user.email, name: user.name },
+        jwtToken,
+      },
+      201
+    );
   } catch (error) {
     console.error("Validation error:", error);
     return c.json({ error: "Failed to validate email address" }, 500);
