@@ -51,7 +51,7 @@ auth.post("/signup", async (c: Context) => {
 
     // There is no existing user and so we make a new account
     if (!existingUser[0]) {
-      console.log("No existing user", existingUser)
+      console.log("No existing user", existingUser);
 
       const [user] = await db
         .insert(users)
