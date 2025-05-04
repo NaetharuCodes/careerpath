@@ -14,6 +14,9 @@ vi.mock("../../src/db/index.js", () => ({
     insert: vi.fn().mockReturnThis(),
     values: vi.fn().mockReturnThis(),
     returning: vi.fn(() => mockDbInsertReturn),
+
+    update: vi.fn().mockReturnThis(),
+    set: vi.fn().mockReturnThis(),
   },
 }));
 
@@ -48,5 +51,104 @@ describe("Auth Routes - Sign Up", () => {
     expect(data).toHaveProperty("user");
     expect(data.user).toHaveProperty("id", "001");
     expect(data.user).toHaveProperty("email", "user@email.com");
+  });
+
+  it("updates the user and sends a new mail if the account is not yet verified", async () => {
+    mockDbSelectReturn = [
+      {
+        id: "001",
+        name: "test user",
+        email: "user@email.com",
+        password: "somenewpassword",
+        verified: false,
+      },
+    ];
+
+    const response = await app.request("/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "user@email.com",
+        password: "1234abcd",
+        name: "test user",
+      }),
+    });
+
+    expect(response.status).toBe(201);
+    const data = await response.json();
+    expect(data).toHaveProperty("message", "User created successfully");
+    expect(data).toHaveProperty("user");
+    expect(data.user).toHaveProperty("id", "001");
+    expect(data.user).toHaveProperty("email", "user@email.com");
+  });
+
+  it("returns a 400 error if the user already exists and is verified", async () => {
+    mockDbSelectReturn = [
+      {
+        id: "001",
+        name: "test user",
+        email: "user@email.com",
+        password: "somenewpassword",
+        verified: true,
+      },
+    ];
+
+    const response = await app.request("/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "user@email.com",
+        password: "1234abcd",
+        name: "test user",
+      }),
+    });
+
+    expect(response.status).toBe(400);
+    const data = await response.json();
+    expect(data).toHaveProperty("error", "User already exists");
+  });
+
+  it("should return a 400 error and invalid input if password is too short", async () => {
+    mockDbSelectReturn = [];
+
+    const response = await app.request("/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "user@email.com",
+        password: "12",
+        name: "test user",
+      }),
+    });
+
+    expect(response.status).toBe(400);
+    const data = await response.json();
+    expect(data).toHaveProperty("error", "Invalid input");
+  });
+
+  it("should return a 400 error and invalid input email is malformed", async () => {
+    mockDbSelectReturn = [];
+
+    const response = await app.request("/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "user_email.com",
+        password: "1234abcd",
+        name: "test user",
+      }),
+    });
+
+    expect(response.status).toBe(400);
+    const data = await response.json();
+    expect(data).toHaveProperty("error", "Invalid input");
   });
 });
