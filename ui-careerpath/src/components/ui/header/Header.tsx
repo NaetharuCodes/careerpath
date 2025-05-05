@@ -5,6 +5,7 @@ import { useTheme } from "@/components/theme-provider";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import LoginModal from "../loginmodal/LoginModal";
 import SignupModal from "../signupmodal/SignupModal";
+import { Link } from "@tanstack/react-router";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
@@ -34,24 +35,27 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <a href="/" className="text-sm font-medium hover:text-primary">
+          <Link to="/" className="text-sm font-medium hover:text-primary">
             Home
-          </a>
-          <a href="/explore" className="text-sm font-medium hover:text-primary">
+          </Link>
+          <Link
+            to="/explore"
+            className="text-sm font-medium hover:text-primary"
+          >
             Explore Careers
-          </a>
-          <a
-            href="/assessments"
+          </Link>
+          <Link
+            to="/assessments"
             className="text-sm font-medium hover:text-primary"
           >
             Assessments
-          </a>
-          <a
-            href="/resources"
+          </Link>
+          <Link
+            to="/resources"
             className="text-sm font-medium hover:text-primary"
           >
             Resources
-          </a>
+          </Link>
         </nav>
 
         {/* Right Side - Auth and Theme Toggle */}
@@ -103,27 +107,27 @@ const Header = () => {
       {mobileMenuOpen && (
         <div className="container md:hidden py-4 px-4">
           <nav className="flex flex-col space-y-4">
-            <a href="/" className="text-sm font-medium hover:text-primary">
+            <Link to="/" className="text-sm font-medium hover:text-primary">
               Home
-            </a>
-            <a
-              href="/explore"
+            </Link>
+            <Link
+              to="/explore"
               className="text-sm font-medium hover:text-primary"
             >
               Explore Careers
-            </a>
-            <a
-              href="/assessments"
+            </Link>
+            <Link
+              to="/assessments"
               className="text-sm font-medium hover:text-primary"
             >
               Assessments
-            </a>
-            <a
-              href="/resources"
+            </Link>
+            <Link
+              to="/resources"
               className="text-sm font-medium hover:text-primary"
             >
               Resources
-            </a>
+            </Link>
             <div className="pt-4 flex flex-col space-y-2">
               <Button variant="outline" size="sm" onClick={toggleLoginModal}>
                 Sign In
