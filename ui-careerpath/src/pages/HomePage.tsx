@@ -11,31 +11,25 @@ import {
   Users,
   Award,
 } from "lucide-react";
+import Hero from "@/components/ui/hero/Hero";
+import FeatureCard from "@/components/ui/featurecard/FeatureCard";
 
 const HomePage = () => {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="py-16 md:py-24 px-4">
-        <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+      <Hero
+        title={
+          <>
             Your Career Journey,{" "}
             <span className="text-primary">Reimagined</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            The modern platform connecting talent with opportunity through
-            advanced tools and personalized guidance.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="gap-2">
-              Find Your Next Role <ArrowRight size={18} />
-            </Button>
-            <Button size="lg" variant="outline" className="gap-2">
-              For Employers <Briefcase size={18} />
-            </Button>
-          </div>
-        </div>
-      </section>
+          </>
+        }
+        subtitle="The modern platform connecting talent with opportunity through advanced tools and personalized guidance."
+        primaryButtonText="Find Your Next Role"
+        primaryButtonIcon={<ArrowRight size={18} />}
+        secondaryButtonText="For Employers"
+        secondaryButtonIcon={<Briefcase size={18} />}
+      />
 
       {/* Value Proposition Section */}
       <section className="py-16 bg-muted/50">
@@ -52,94 +46,73 @@ const HomePage = () => {
 
           <div className="grid md:grid-cols-2 gap-12">
             {/* For Job Seekers */}
-            <div className="bg-background p-8 rounded-lg shadow-sm border">
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Users className="text-primary" />
-                For Job Seekers
-              </h3>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="text-primary mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Professional CV Builder</p>
-                    <p className="text-muted-foreground">
-                      Create standout resumes with our AI-powered tools and
-                      expert templates.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="text-primary mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Interview Practice</p>
-                    <p className="text-muted-foreground">
-                      Practice with realistic scenarios tailored to your
-                      industry and role.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="text-primary mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Personalized Job Matching</p>
-                    <p className="text-muted-foreground">
-                      Discover opportunities that align with your skills,
-                      experience, and aspirations.
-                    </p>
-                  </div>
-                </li>
-              </ul>
-              <div className="mt-8">
-                <Button className="gap-2">
-                  Get Started <ArrowRight size={16} />
-                </Button>
-              </div>
-            </div>
+            <FeatureCard
+              icon={<Users className="text-primary" />}
+              title="For Job Seekers"
+              features={[
+                {
+                  icon: (
+                    <CheckCircle className="text-primary mt-1 flex-shrink-0" />
+                  ),
+                  title: "Professional CV Builder",
+                  description:
+                    "Create standout resumes with our AI-powered tools and expert templates.",
+                },
+                {
+                  icon: (
+                    <CheckCircle className="text-primary mt-1 flex-shrink-0" />
+                  ),
+                  title: "Interview Practice",
+                  description:
+                    "Practice with realistic scenarios tailored to your industry and role.",
+                },
+                {
+                  icon: (
+                    <CheckCircle className="text-primary mt-1 flex-shrink-0" />
+                  ),
+                  title: "Personalized Job Matching",
+                  description:
+                    "Discover opportunities that align with your skills, experience, and aspirations.",
+                },
+              ]}
+              buttonText="Get Started"
+              buttonIcon={<ArrowRight size={16} />}
+            />
 
             {/* For Employers */}
-            <div className="bg-background p-8 rounded-lg shadow-sm border">
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Briefcase className="text-primary" />
-                For Employers
-              </h3>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="text-primary mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Efficient Hiring Tools</p>
-                    <p className="text-muted-foreground">
-                      Streamline your recruitment process with our comprehensive
-                      suite of tools.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="text-primary mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Quality Candidate Matching</p>
-                    <p className="text-muted-foreground">
-                      Find candidates who truly fit your needs using our
-                      advanced matching algorithms.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="text-primary mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Cost-Effective Solutions</p>
-                    <p className="text-muted-foreground">
-                      Reduce time-to-hire and recruitment costs with our
-                      transparent pricing model.
-                    </p>
-                  </div>
-                </li>
-              </ul>
-              <div className="mt-8">
-                <Button className="gap-2">
-                  Recruit Better <ArrowRight size={16} />
-                </Button>
-              </div>
-            </div>
+            <FeatureCard
+              icon={<Briefcase className="text-primary" />}
+              title="For Employers"
+              features={[
+                {
+                  icon: (
+                    <CheckCircle className="text-primary mt-1 flex-shrink-0" />
+                  ),
+                  title: "Efficient Hiring Tools",
+                  description:
+                    "Streamline your recruitment process with our comprehensive suite of tools.",
+                },
+                {
+                  icon: (
+                    <CheckCircle className="text-primary mt-1 flex-shrink-0" />
+                  ),
+                  title: "Quality Candidate Matching",
+                  description:
+                    "Find candidates who truly fit your needs using our advanced matching algorithms.",
+                },
+                {
+                  icon: (
+                    <CheckCircle className="text-primary mt-1 flex-shrink-0" />
+                  ),
+                  title: "Cost-Effective Solutions",
+                  description:
+                    "Reduce time-to-hire and recruitment costs with our transparent pricing model.",
+                },
+              ]}
+              buttonText="Recruit Better"
+              buttonIcon={<ArrowRight size={16} />}
+              onButtonClick={() => console.log("Button clicked")}
+            />
           </div>
         </div>
       </section>
