@@ -49,9 +49,7 @@ export const sendWelcomeEmail = async (
   email: string,
   validationToken: string
 ) => {
-  const verifyURL = `${
-    process.env.EMAIL_FROM_NAME || "careerpath.com"
-  }/auth/verify?token=${validationToken}`;
+  const verifyURL = `http://localhost:5173/auth/verify?token=${validationToken}`;
 
   return transporter.sendMail({
     from: `"${process.env.EMAIL_FROM_NAME || "Career Path"}" <${
