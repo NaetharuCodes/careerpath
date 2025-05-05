@@ -101,7 +101,7 @@ const Header = () => {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="container md:hidden py-4">
+        <div className="container md:hidden py-4 px-4">
           <nav className="flex flex-col space-y-4">
             <a href="/" className="text-sm font-medium hover:text-primary">
               Home
