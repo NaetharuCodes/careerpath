@@ -39,13 +39,13 @@ const Header = () => {
             Home
           </Link>
           <Link
-            to="/explore"
+            to="/pathways"
             className="text-sm font-medium hover:text-primary"
           >
             Explore Careers
           </Link>
           <Link
-            to="/assessments"
+            to="/resources"
             className="text-sm font-medium hover:text-primary"
           >
             Assessments

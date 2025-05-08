@@ -8,7 +8,7 @@ interface FeatureBoxProps {
   description: string;
   linkText?: string;
   linkUrl?: string;
-  onLinkClick?: () => void;
+  onClick: () => void;
   className?: string;
 }
 
@@ -17,8 +17,7 @@ const FeatureBox = ({
   title,
   description,
   linkText = "Learn more",
-  linkUrl,
-  onLinkClick,
+  onClick,
   className = "",
 }: FeatureBoxProps) => {
   return (
@@ -29,12 +28,11 @@ const FeatureBox = ({
       <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-muted-foreground flex-grow">{description}</p>
 
-      {(linkText || linkUrl || onLinkClick) && (
+      {onClick && (
         <Button
           variant="ghost"
           className="mt-4 justify-start p-0 hover:bg-transparent hover:text-primary"
-          onClick={onLinkClick}
-          {...(linkUrl ? { as: "a", href: linkUrl } : {})}
+          onClick={onClick}
         >
           {linkText} <ArrowRight size={16} className="ml-1" />
         </Button>
