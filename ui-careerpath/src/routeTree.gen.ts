@@ -15,6 +15,7 @@ import { Route as ResourcesImport } from './routes/resources'
 import { Route as PathwaysImport } from './routes/pathways'
 import { Route as JourneyImport } from './routes/journey'
 import { Route as DashImport } from './routes/dash'
+import { Route as CodecourseImport } from './routes/codecourse'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
 
@@ -41,6 +42,12 @@ const JourneyRoute = JourneyImport.update({
 const DashRoute = DashImport.update({
   id: '/dash',
   path: '/dash',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CodecourseRoute = CodecourseImport.update({
+  id: '/codecourse',
+  path: '/codecourse',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -72,6 +79,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutImport
+      parentRoute: typeof rootRoute
+    }
+    '/codecourse': {
+      id: '/codecourse'
+      path: '/codecourse'
+      fullPath: '/codecourse'
+      preLoaderRoute: typeof CodecourseImport
       parentRoute: typeof rootRoute
     }
     '/dash': {
@@ -110,6 +124,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/codecourse': typeof CodecourseRoute
   '/dash': typeof DashRoute
   '/journey': typeof JourneyRoute
   '/pathways': typeof PathwaysRoute
@@ -119,6 +134,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/codecourse': typeof CodecourseRoute
   '/dash': typeof DashRoute
   '/journey': typeof JourneyRoute
   '/pathways': typeof PathwaysRoute
@@ -129,6 +145,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/codecourse': typeof CodecourseRoute
   '/dash': typeof DashRoute
   '/journey': typeof JourneyRoute
   '/pathways': typeof PathwaysRoute
@@ -137,13 +154,28 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/dash' | '/journey' | '/pathways' | '/resources'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/codecourse'
+    | '/dash'
+    | '/journey'
+    | '/pathways'
+    | '/resources'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/dash' | '/journey' | '/pathways' | '/resources'
+  to:
+    | '/'
+    | '/about'
+    | '/codecourse'
+    | '/dash'
+    | '/journey'
+    | '/pathways'
+    | '/resources'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/codecourse'
     | '/dash'
     | '/journey'
     | '/pathways'
@@ -154,6 +186,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  CodecourseRoute: typeof CodecourseRoute
   DashRoute: typeof DashRoute
   JourneyRoute: typeof JourneyRoute
   PathwaysRoute: typeof PathwaysRoute
@@ -163,6 +196,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  CodecourseRoute: CodecourseRoute,
   DashRoute: DashRoute,
   JourneyRoute: JourneyRoute,
   PathwaysRoute: PathwaysRoute,
@@ -181,6 +215,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/codecourse",
         "/dash",
         "/journey",
         "/pathways",
@@ -192,6 +227,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/codecourse": {
+      "filePath": "codecourse.tsx"
     },
     "/dash": {
       "filePath": "dash.tsx"
