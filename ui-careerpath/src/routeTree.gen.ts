@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as ResourcesImport } from './routes/resources'
 import { Route as PathwaysImport } from './routes/pathways'
+import { Route as JourneyImport } from './routes/journey'
 import { Route as DashImport } from './routes/dash'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
@@ -28,6 +29,12 @@ const ResourcesRoute = ResourcesImport.update({
 const PathwaysRoute = PathwaysImport.update({
   id: '/pathways',
   path: '/pathways',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const JourneyRoute = JourneyImport.update({
+  id: '/journey',
+  path: '/journey',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -74,6 +81,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashImport
       parentRoute: typeof rootRoute
     }
+    '/journey': {
+      id: '/journey'
+      path: '/journey'
+      fullPath: '/journey'
+      preLoaderRoute: typeof JourneyImport
+      parentRoute: typeof rootRoute
+    }
     '/pathways': {
       id: '/pathways'
       path: '/pathways'
@@ -97,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dash': typeof DashRoute
+  '/journey': typeof JourneyRoute
   '/pathways': typeof PathwaysRoute
   '/resources': typeof ResourcesRoute
 }
@@ -105,6 +120,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dash': typeof DashRoute
+  '/journey': typeof JourneyRoute
   '/pathways': typeof PathwaysRoute
   '/resources': typeof ResourcesRoute
 }
@@ -114,16 +130,24 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/dash': typeof DashRoute
+  '/journey': typeof JourneyRoute
   '/pathways': typeof PathwaysRoute
   '/resources': typeof ResourcesRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/dash' | '/pathways' | '/resources'
+  fullPaths: '/' | '/about' | '/dash' | '/journey' | '/pathways' | '/resources'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/dash' | '/pathways' | '/resources'
-  id: '__root__' | '/' | '/about' | '/dash' | '/pathways' | '/resources'
+  to: '/' | '/about' | '/dash' | '/journey' | '/pathways' | '/resources'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/dash'
+    | '/journey'
+    | '/pathways'
+    | '/resources'
   fileRoutesById: FileRoutesById
 }
 
@@ -131,6 +155,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   DashRoute: typeof DashRoute
+  JourneyRoute: typeof JourneyRoute
   PathwaysRoute: typeof PathwaysRoute
   ResourcesRoute: typeof ResourcesRoute
 }
@@ -139,6 +164,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   DashRoute: DashRoute,
+  JourneyRoute: JourneyRoute,
   PathwaysRoute: PathwaysRoute,
   ResourcesRoute: ResourcesRoute,
 }
@@ -156,6 +182,7 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/dash",
+        "/journey",
         "/pathways",
         "/resources"
       ]
@@ -168,6 +195,9 @@ export const routeTree = rootRoute
     },
     "/dash": {
       "filePath": "dash.tsx"
+    },
+    "/journey": {
+      "filePath": "journey.tsx"
     },
     "/pathways": {
       "filePath": "pathways.tsx"
