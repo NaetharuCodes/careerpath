@@ -45,10 +45,10 @@ const Header = () => {
             Explore Careers
           </Link>
           <Link
-            to="/resources"
+            to="/codecourse"
             className="text-sm font-medium hover:text-primary"
           >
-            Assessments
+            Courses
           </Link>
           <Link
             to="/resources"
