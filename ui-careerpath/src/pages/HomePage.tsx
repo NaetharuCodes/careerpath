@@ -1,5 +1,5 @@
 // src/components/home/HomePage.tsx
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button/Button";
 import {
   ArrowRight,
@@ -18,8 +18,15 @@ import FeatureBox from "@/components/ui/featurebox/FeatureBox";
 import TestimonialCard from "@/components/ui/testimonial/Testimonial";
 import StatisticsSection from "@/components/ui/statsbar/StatsBar";
 import CTASection from "@/components/ui/calltoaction/CallToAction";
+import CVBuilderInfoModal from "@/components/ui/featuremodals/CVBuilderInfoModal";
 
 const HomePage = () => {
+  const [cvModal, setCvModal] = useState<boolean>(false);
+
+  const handleOpenCvModal = () => {
+    setCvModal(!cvModal);
+  };
+
   return (
     <div className="flex flex-col">
       <Hero
@@ -209,7 +216,7 @@ const HomePage = () => {
               title="AI-Powered CV Builder"
               description="Create professional resumes with smart suggestions and industry-approved templates."
               linkText="Learn more"
-              onLinkClick={() => console.log("Learn more clicked")}
+              onClick={handleOpenCvModal}
             />
 
             {/* Feature 2 - Interview Practice */}
@@ -218,7 +225,7 @@ const HomePage = () => {
               title="Interview Simulator"
               description="Practice with industry-specific questions and receive feedback to improve your skills."
               linkText="Learn more"
-              linkUrl="/features/interview-simulator"
+              onClick={handleOpenCvModal}
             />
 
             {/* Feature 3 - Analytics */}
@@ -227,7 +234,7 @@ const HomePage = () => {
               title="Career Analytics"
               description="Track application progress, salary trends, and skill demand in your industry."
               linkText="Learn more"
-              linkUrl="/features/analytics"
+              onClick={handleOpenCvModal}
             />
           </div>
         </div>
@@ -297,6 +304,7 @@ const HomePage = () => {
           href: "/about",
         }}
       />
+      <CVBuilderInfoModal isOpen={cvModal} onClose={handleOpenCvModal} />
     </div>
   );
 };
