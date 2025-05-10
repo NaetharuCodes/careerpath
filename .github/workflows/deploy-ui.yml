@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "ui/**"
+      - "ui-careerpath/**" # Updated path to match your project structure
 
 jobs:
   build-and-deploy:
@@ -18,20 +18,20 @@ jobs:
         with:
           node-version: "18"
           cache: "npm"
-          cache-dependency-path: "package-lock.json"
+          cache-dependency-path: "ui-careerpath/package-lock.json" # Updated path
 
       - name: Install dependencies
         run: |
-          cd ui
+          cd ui-careerpath  # Updated directory name
           npm ci
 
       - name: Build
         run: |
-          cd ui
+          cd ui-careerpath  # Updated directory name
           npm run build
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ui-careerpath/dist
+          folder: ui-careerpath/dist # Ensure this path is correct
           branch: gh-pages
