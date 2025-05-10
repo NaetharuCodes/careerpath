@@ -19,12 +19,11 @@ import {
 } from "lucide-react";
 
 const MyJourneyPage = () => {
-  // State for tracking which milestones are expanded in the accordion
-  const [expandedMilestones, setExpandedMilestones] = useState({});
 
-  // Toggle expanded state of a milestone
-  const toggleMilestone = (id) => {
-    setExpandedMilestones((prev) => ({
+  const [expandedMilestones, setExpandedMilestones] = useState<any>({});
+
+  const toggleMilestone = (id: string) => {
+    setExpandedMilestones((prev: any) => ({
       ...prev,
       [id]: !prev[id],
     }));
@@ -348,7 +347,7 @@ const MyJourneyPage = () => {
   ];
 
   // Function to render milestone status indicator
-  const renderStatusIndicator = (status, progress) => {
+  const renderStatusIndicator = (status: any, progress: any) => {
     switch (status) {
       case "completed":
         return <CheckCircle size={18} className="text-green-500" />;
@@ -565,7 +564,7 @@ const MyJourneyPage = () => {
         </div>
 
         <div className="space-y-4">
-          {milestones.map((milestone) => (
+          {milestones.map((milestone: any) => (
             <div
               key={milestone.id}
               className="border rounded-lg overflow-hidden bg-background"
@@ -629,7 +628,7 @@ const MyJourneyPage = () => {
                       Steps to Complete This Milestone
                     </h4>
                     <div className="space-y-4">
-                      {milestone.steps.map((step) => (
+                      {milestone.steps.map((step: any) => (
                         <div key={step.id} className="border rounded-lg p-4">
                           <div className="flex justify-between mb-2">
                             <div className="flex items-center gap-2">

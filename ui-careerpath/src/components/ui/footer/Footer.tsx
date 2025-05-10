@@ -1,5 +1,3 @@
-// src/components/ui/footer/Footer.tsx
-import React from "react";
 import { Button } from "@/components/ui/button/Button";
 
 const Footer = () => {

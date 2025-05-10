@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 interface ProcessStep {
   number: number;
   title: string;

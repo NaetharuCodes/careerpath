@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button/Button";
 import {
   Search,
   BookOpen,
-  Award,
   Briefcase,
   BarChart,
   Filter,

@@ -1,5 +1,3 @@
-// src/components/ui/header/Header.tsx
-import React from "react";
 import { Button } from "@/components/ui/button/Button";
 import { useTheme } from "@/components/theme-provider";
 import { Sun, Moon, Menu, X } from "lucide-react";
@@ -111,16 +109,16 @@ const Header = () => {
               Home
             </Link>
             <Link
-              to="/explore"
+              to="/about"
               className="text-sm font-medium hover:text-primary"
             >
-              Explore Careers
+              About
             </Link>
             <Link
-              to="/assessments"
+              to="/codecourse"
               className="text-sm font-medium hover:text-primary"
             >
-              Assessments
+              CodeCourse
             </Link>
             <Link
               to="/resources"

@@ -1,6 +1,3 @@
-// src/components/home/HomePage.tsx
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button/Button";
 import {
   ArrowRight,
   CheckCircle,
@@ -9,7 +6,6 @@ import {
   MessageSquare,
   BarChart,
   Users,
-  Award,
 } from "lucide-react";
 import Hero from "@/components/ui/hero/Hero";
 import FeatureCard from "@/components/ui/featurecard/FeatureCard";

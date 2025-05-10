@@ -16,6 +16,7 @@ import {
   Bookmark,
   PlusCircle,
 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 const ResourcesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -247,9 +248,8 @@ const ResourcesPage = () => {
                 {resource.description}
               </p>
 
-              <Button
-                as="a"
-                href={resource.link}
+              <Link
+                to={resource.link}
                 className="w-full"
                 {...(resource.source === "external"
                   ? { target: "_blank", rel: "noopener noreferrer" }
@@ -261,7 +261,7 @@ const ResourcesPage = () => {
                 {resource.source === "external" && (
                   <ExternalLink size={16} className="ml-2" />
                 )}
-              </Button>
+              </Link>
             </div>
           ))}
         </div>
@@ -361,11 +361,8 @@ const ResourcesPage = () => {
                   </span>
                 </div>
 
-                <Button
-                  as="a"
-                  href={resource.link}
-                  variant="outline"
-                  size="sm"
+                <Link
+                  to={resource.link}
                   className="w-full"
                   {...(resource.source === "external"
                     ? { target: "_blank", rel: "noopener noreferrer" }
@@ -375,7 +372,7 @@ const ResourcesPage = () => {
                   {resource.source === "external" && (
                     <ExternalLink size={16} className="ml-2" />
                   )}
-                </Button>
+                </Link>
               </div>
             ))}
           </div>
