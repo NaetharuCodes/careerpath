@@ -12,9 +12,6 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ui-careerpath
 
     steps:
       - name: Checkout
@@ -28,19 +25,23 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
+        working-directory: ui-careerpath
         run: npm ci
 
       - name: Build
+        working-directory: ui-careerpath
         run: npm run build
 
-      # Add this step to debug what's in the build directory
-      - name: List build directory contents
-        run: ls -la dist
+      # Create .nojekyll file
+      - name: Create .nojekyll file
+        working-directory: ui-careerpath
+        run: touch dist/.nojekyll
 
+      # Deploy with strict source and destination path
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: ui-careerpath/dist
+          folder: ui-careerpath/dist # Source folder MUST be the built dist folder
           branch: gh-pages
-          clean: true # Ensure the branch is clean before deploying
+          clean: true # Important! Remove everything in the gh-pages branch
           token: ${{ secrets.GITHUB_TOKEN }}
