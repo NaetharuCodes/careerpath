@@ -29,7 +29,7 @@ const HomePage = () => {
       <Hero
         title={
           <>
-            Your Career Journey,{" "}
+            Your Career Journey,{"  "}
             <span className="text-primary">Reimagined</span>
           </>
         }
