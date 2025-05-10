@@ -15,6 +15,7 @@ import TestimonialCard from "@/components/ui/testimonial/Testimonial";
 import StatisticsSection from "@/components/ui/statsbar/StatsBar";
 import CTASection from "@/components/ui/calltoaction/CallToAction";
 import CVBuilderInfoModal from "@/components/ui/featuremodals/CVBuilderInfoModal";
+import { useState } from "react";
 
 const HomePage = () => {
   const [cvModal, setCvModal] = useState<boolean>(false);
