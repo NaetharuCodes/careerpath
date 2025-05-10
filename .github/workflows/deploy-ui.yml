@@ -10,42 +10,42 @@ permissions:
   contents: write
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ui-careerpath # Default working directory for ALL steps
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Build UI
+        run: |
+          cd ui-careerpath
+          npm ci
+          npm run build
 
-      - name: Build
-        run: npm run build
+      - name: Prepare deployment
+        run: |
+          # Create a clean deployment directory
+          mkdir -p /tmp/deploy
 
-      # Add a step to debug what's in the build directory
-      - name: Debug dist directory
-        run: ls -la dist
+          # Copy only the build output to the deployment directory
+          cp -r ui-careerpath/dist/* /tmp/deploy/
 
-      # Create .nojekyll file
-      - name: Create .nojekyll file
-        run: touch dist/.nojekyll
+          # Create .nojekyll file to disable Jekyll processing
+          touch /tmp/deploy/.nojekyll
 
-      # Deploy with a more explicit approach
+          # Debug: List what we're about to deploy
+          echo "Contents of deployment directory:"
+          ls -la /tmp/deploy
+
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: ui-careerpath/dist # Full path from workspace root
-          branch: gh-pages
-          clean: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/deploy
+          force_orphan: true # Create a new history for the gh-pages branch
