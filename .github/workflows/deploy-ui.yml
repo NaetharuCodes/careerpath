@@ -6,7 +6,6 @@ on:
     paths:
       - "ui-careerpath/**"
 
-# Add this permissions block
 permissions:
   contents: write
 
@@ -21,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          persist-credentials: false # Add this line for cleaner git state
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -34,9 +33,14 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Add this step to debug what's in the build directory
+      - name: List build directory contents
+        run: ls -la dist
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: ui-careerpath/dist
           branch: gh-pages
-          token: ${{ secrets.GITHUB_TOKEN }} # Add this to explicitly use the GitHub token
+          clean: true # Ensure the branch is clean before deploying
+          token: ${{ secrets.GITHUB_TOKEN }}
