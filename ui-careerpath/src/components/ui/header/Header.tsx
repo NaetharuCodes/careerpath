@@ -4,13 +4,14 @@ import { Sun, Moon, Menu, X } from "lucide-react";
 import LoginModal from "../loginmodal/LoginModal";
 import SignupModal from "../signupmodal/SignupModal";
 import { Link } from "@tanstack/react-router";
+import {useState} from "react"
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const [showLoginModal, setShowLoginModal] = React.useState(false);
-  const [showSignUpModal, setShowSignUpModal] = React.useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
